@@ -1,0 +1,133 @@
+#----- Can have multiple copies based on environment and subscription. It is recommended to add this file to .gitignore file as it contains Azure Keys.
+initialconfiguration:
+  environment: 'dev' # accepted values: dev | qa | stage | prod, Note: ECB-AllInOne only accepted value: 'dev' - This is architectural pattern to make any changes should be introduced from dev to prod (Infrastructure and ecb-configuartion)
+  mode: 'ECB-AllInOne' # accepted values: ECB-AllInOne | ECB-MultiServer
+  prefix: 'kankidc' # Cannot be more than 7 letters
+  # While executing if you pass -getvnetaddress it will fetch the address space from storage account
+  # These values are of storage account which contains "table" of vnet address spaces and are used by Dev and QA environments. These values depends on dev or test environment you are deploying to.
+  # for test vnet_storage_account_name: 'saecbartifactstest'
+  vnet_storage_account_name: 'saecbartifacts'
+  vnet_resource_group_name: 'rg-ecb-shared'
+  VnetTableName: 'VNETDETAILS'
+azure:
+  location: 'eastus'
+  # If you donot pass -getvnetaddress it will fetch the address space from this entry
+  vNetAddressSpace: "10.17.0.0/16"
+  # Provide ECB Image name and its resource group - Image has to be in the same azure region and subscription
+  custom_image_name : "ECB_mvp_release_2139_20190827_1557"
+  custom_image_resource_group_name : "Images-Development"
+  # Provide Jasper Image name and its resource group - Image has to be in the same azure region and subscription
+  jasper_image_name : "Jasper-Srv-710-Enterprise-2019070"
+  jasper_image_resource_group_name : "Images-Development"
+  # Provide Vertex Image name and its resource group - Image has to be in the same azure region and subscription
+  vertex_image_name : "ECB_mvp_release_2139_20190827_1557_Verte"
+  vertex_image_resource_group_name : "Images-Development"
+  # VAULT DETAILS
+  master_key_vault_name : "vault-shared-dtdev"
+vmconfiguration:
+  # Autoshutdown settings - for 'Enable AutoShutdown' put 'true' to enable auto shut down else 'false'and Status autoshutdown to 'Enable' to get notifications to Email. Change the required values.
+  # Accepted values are : true, Disable, false :
+  # "true" is to turn on autoshutdown, "Disable" does nothing | Added additional feature : "false" is to turn off autoshutdown when it is turned on (For this terraform apply has to run after changing this value)
+  Enable_AutoShutDownVM              : "true"
+  # Accepted values are Enable, Disable for email notification for VM
+  Status_AutoShutDownVM_Notification : "Disable"
+  Enable_AutoShutDownVM_Email        : "example.com"
+  Enable_AutoShutDownVM_time         : "1900"
+  Enable_AutoShutDownVM_time_zone    : "Eastern Standard Time"
+
+  # Azure vm user name
+  admin_username : "Developer"
+  jb_admin_username : "Developer"
+
+  # Here 'mvw' is metraview, 'prp' is primary-pipeline, 'sep' is secondary-pipeline, 'api' is Rest-api, 'is' is Integration-server or soap-api, 'ws' is ecb or priviliged VM, jsp is Jasper or Reporting VM
+  # These count also depends on creation of Load Balancer and AVset for the profile you are going to deploy
+  mvw_vm_count     : "1"
+  prp_vm_count     : "1"
+  api_vm_count     : "1"
+  is_vm_count      : "1"
+  ws_vm_count      : "1"
+  sep_vm_count     : "1"
+  jsp_vm_count     : "0"
+  vtx_vm_count     : "0"
+  jb_vm_count      : "1"
+  jasper_disk_size : "1024"
+
+  # Change Vm Size based on the profile
+  mvw_vm_size : "Standard_ds2_v2"
+  prp_vm_size : "Standard_ds2_v2"
+  api_vm_size : "Standard_ds2_v2"
+  is_vm_size  : "Standard_ds2_v2"
+  ws_vm_size  : "Standard_ds2_v2"
+  sep_vm_size : "Standard_ds2_v2"
+  jsp_vm_size : "Standard_ds2_v2"
+  vtx_vm_size : "Standard_ds2_v2"
+  jb_vm_size  : "Standard_ds2_v2"
+  sql_vm_size : "Standard_ds2_v2"
+
+  # Accepted values : "SQLDEV" | "Enterprise"
+  sql_image_sku : "SQLDEV"
+
+  # Change Vm Disk types based on the profile
+  prp_managed_disk_type      : "Standard_LRS"
+  sep_managed_disk_type      : "Standard_LRS"
+  is_managed_disk_type       : "Standard_LRS"
+  ws_managed_disk_type       : "Standard_LRS"
+  mvw_managed_disk_type      : "Standard_LRS"
+  api_managed_disk_type      : "Standard_LRS"
+  jsp_managed_disk_type      : "Standard_LRS"
+  jsp_managed_data_disk_type : "Standard_LRS"
+  sql_managed_disk_type      : "Standard_LRS"
+  vtx_managed_disk_type      : "Standard_LRS"
+
+  # Set to "true" to add vm's to the backend pool else put "false"
+  lb_attach : "true"
+
+  # Set to "true" to REMOVE VM's from the backend pool else put "false" to not Trigger
+  lb_detach : "false"
+
+  # Maintain the Naming Convention of deployment "1,2" for image upgrade process. Here it is 1.
+  MetraViewVMName         : "mview1"
+  PrimaryPipelineVMName   : "ratea1"
+  SecondaryPipelineVMName : "rateb1"
+  RestAPIVMName           : "rapi1"
+  IntegrationServerVMName : "sapi1"
+  WebServerVMName         : "ecb1"
+  JasperVMName            : "reprt1"
+  VertexVMName            : "vtx1"
+
+  # Make sure these names are same in Deploy_1 and Deploy_2, because these resources are same and are shared between both deployments.
+  # VM names
+  JumpHostVMName          : "jumpbox"
+  SqlVMName               : "sql-db"
+
+  # LB names
+  IntegrationServerLBName : "sapi"
+  JumpHostLBName          : "jumpbox"
+  MetraViewLBName         : "mview"
+  PrimaryPipelineLBName   : "ratea"
+  SecondaryPipelineLBName : "rateb"
+  RestAPILBName           : "rapi"
+  WebServerLBName         : "ecb"
+  SqlLBName               : "sql-db"
+  JasperLBName            : "reprt"
+  VertexLBName            : "vtx"
+
+  # AV Set names
+  IntegrationServer_AvSet_Name : "sapi"
+  WebServer_AvSet_Name         : "ecb"
+  MetraView_AvSet_Name         : "mview"
+  RestAPI_AvSet_Name           : "rapi"
+  Jasper_AvSet_Name            : "jaspr"
+  Vertex_AvSet_Name            : "vtx"
+  PRP_AvSet_Name               : "ratea"
+  SEP_AvSet_Name               : "rateb"
+
+  ###################### ECB ALL IN ONE #######################
+  # HERE Jumpbox, sql and jasper vm's are common, these values are taken from above
+  ECBServerVMName         : "aio1"
+  # LB names
+  ECB_AllInOne_LB_Name    : "aio"
+  # AV Set names
+  ECB_AllInOne_AvSet_Name : "aio"
+  ecb_vm_size             : "Standard_ds2_v2"
+  ecb_managed_disk_type   : "Standard_LRS"
